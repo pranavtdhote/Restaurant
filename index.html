@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Ordering System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">FaasosExpress</h1>
+        <ul class="flex space-x-6">
+            <li><a href="#" class="hover:underline">Home</a></li>
+            <li><a href="#order" class="hover:underline">Order</a></li>
+            <li><a href="#about" class="hover:underline">About</a></li>
+            <li><a href="#contact" class="hover:underline">Contact</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Hero Section -->
+    <header class="bg-cover bg-center h-64 flex items-center justify-center hover:text-white text-3xl font-bold" style="background-image: url('image.png")>
+        Welcome to FaasosExpress!
+    </header>
+    
+    <!-- Order Section -->
+    <section id="order" class="p-6 max-w-xl mx-auto bg-white shadow-lg rounded-lg mt-6">
+        <h2 class="text-2xl font-bold text-center">Place Your Order</h2>
+        <form id="orderForm" class="mt-4">
+            <label class="block">Select Food:</label>
+            <select id="foodItem" class="border rounded w-full p-2">
+                <option value="Burger" data-price="100">Burger - ₹100</option>
+                <option value="Pizza" data-price="200">Pizza - ₹200</option>
+                <option value="Pasta" data-price="150">Pasta - ₹150</option>
+                <option value="Sandwich" data-price="80">Sandwich - ₹80</option>
+            </select>
+            <label class="block mt-2">Quantity:</label>
+            <input type="number" id="quantity" value="1" min="1" class="border rounded w-full p-2">
+            <button type="button" onclick="addToOrder()" class="mt-4 text-white px-4 py-2 rounded bg-blue-500 ">Add to Order</button>
+        </form>
+        
+        <h3 class="text-xl font-bold mt-6">Order Summary</h3>
+        <ul id="orderList" class="mt-2"></ul>
+        <p class="font-bold mt-2">Total: ₹<span id="totalAmount">0</span></p>
+        <button onclick="generateBill()" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">Generate Bill</button>
+        
+        <div id="billSection" class="hidden mt-6">
+            <h3 class="text-xl font-bold">Generated Bill</h3>
+            <p id="billDetails"></p>
+            <h3 class="text-xl font-bold mt-4">Feedback</h3>
+            <textarea id="feedback" class="border w-full p-2" placeholder="Leave your feedback..."></textarea>
+            <button onclick="submitFeedback()" class="mt-2 bg-purple-500 text-white px-4 py-2 rounded">Submit Feedback</button>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="p-6 max-w-3xl mx-auto mt-10 text-center">
+        <h2 class="text-2xl font-bold">About Us</h2>
+        <p class="mt-4">We serve fresh and delicious food straight to your door. Order now and enjoy amazing flavors!</p>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="p-6 max-w-3xl mx-auto mt-10 text-center">
+        <h2 class="text-2xl font-bold">Contact Us</h2>
+        <p class="mt-4">📍 Location: Pune, India</p>
+        <p>📞 Phone: +91 8446432484</p>
+        <p>✉ Email: support@faasosexpress.com</p>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white text-center p-4 mt-10">
+        &copy; 2025 FaasosExpress. All rights reserved.
+    </footer>
+    
+    <script>
+        let order = [];
+        let total = 0;
+        
+        function addToOrder() {
+            let foodSelect = document.getElementById("foodItem");
+            let quantity = parseInt(document.getElementById("quantity").value);
+            let food = foodSelect.options[foodSelect.selectedIndex].value;
+            let price = parseInt(foodSelect.options[foodSelect.selectedIndex].getAttribute("data-price"));
+            let itemTotal = price * quantity;
+            
+            order.push({ food, quantity, price, itemTotal });
+            total += itemTotal;
+            updateOrderList();
+        }
+        
+        function updateOrderList() {
+            let orderList = document.getElementById("orderList");
+            orderList.innerHTML = "";
+            order.forEach((item, index) => {
+                orderList.innerHTML += `<li>${item.quantity}x ${item.food} - ₹${item.itemTotal} <button onclick="removeItem(${index})" class='text-red-500'>[X]</button></li>`;
+            });
+            document.getElementById("totalAmount").textContent = total;
+        }
+        
+        function removeItem(index) {
+            total -= order[index].itemTotal;
+            order.splice(index, 1);
+            updateOrderList();
+        }
+        
+        function generateBill() {
+            let billDetails = "<ul>";
+            order.forEach(item => {
+                billDetails += `<li>${item.quantity}x ${item.food} - ₹${item.itemTotal}</li>`;
+            });
+            billDetails += `</ul><p class='font-bold'>Total: ₹${total}</p>`;
+            document.getElementById("billDetails").innerHTML = billDetails;
+            document.getElementById("billSection").classList.remove("hidden");
+        }
+        
+        function submitFeedback() {
+            let feedbackText = document.getElementById("feedback").value;
+            alert("Feedback Submitted: " + feedbackText);
+        }
+    </script>
+</body>
+</html>
